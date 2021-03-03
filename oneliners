@@ -1,0 +1,11 @@
+awk '{ if (($1 ~ /^>/) && ( NR > 1 )) { exit } print $0 }' hap1.fa | less -S
+
+Get the first region from a fasta file.
+  ($1 ~ /^>/) If the first field begins with '>'
+  NR > 1      if the current line read fomr the file is greater than 1
+  exit        This will exit at the start of the second region 
+  print $0    Print the first line, and subsequent lines if they do not begin with '>'
+  hap1.fa     The file we are looking at.
+  | less -S   Pipe results to less, -S option prevents word wrap and allows horizontal scrolling with arrow keys.
+ 
+ 
