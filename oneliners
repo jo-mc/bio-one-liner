@@ -7,5 +7,5 @@ Get the first region from a fasta file.
   print $0    Print the first line, and subsequent lines if they do not begin with '>'
   hap1.fa     The file we are looking at.
   | less -S   Pipe results to less, -S option prevents word wrap and allows horizontal scrolling with arrow keys.
- 
+              Alternately redirect output(the first region) to file with "> hap1_region1.fa"
  
