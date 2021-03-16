@@ -23,11 +23,15 @@ awk '/^>/{s=++d".fa"; fname = substr($1,2,length($1)); n = index(fname,"GL");   
 FINAL:
 Split a genome into a file for each of its chromosomes, or filter for chromosomes requried.
 
-First test your generated filenames and filter are as you require: (adjust $1 $2 $3 etc and specify filter for 
+First test that the generated filenames will be suitable and unique, and filtered are as you require: (adjust $1 $2 $3 etc and specify filter for 
  chromosomes not required eg: 'GL' 'NC' [add another with '|MT' ] ) 
+ 
 awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} if (faOut == 1) print fname }' hs37d5.fa
 
-Now update this command based on your filename requirements, and this will create the output file for each chromosome.
+
+Now update this command to output chromosomes requried to the filenames, based on your filename requirements, and this will create the output file 
+for each chromosome:
+
 awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} } {if (faOut == 1) {print > fname} }' hs37d5.fa
 
 hs37d5.fa : the  genome name.
