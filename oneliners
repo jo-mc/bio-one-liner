@@ -9,6 +9,12 @@ Get the first region from a fasta file.
   | less -S   Pipe results to less, -S option prevents word wrap and allows horizontal scrolling with arrow keys.
               Alternately redirect output(the first region) to file with "> hap1_region1.fa"
  
+ All region and count of nucleotide: (first line blank)
+gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); nCount = 0 } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k5,5 -n | less -S
+
+List nucleotide count for each region:
+gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
+
 
 
 Split fasta:
