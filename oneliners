@@ -16,6 +16,20 @@ List nucleotide count for each region:
 gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
 
 
+Scaffold/Contig/Region sizes in a fasta assembly file.
+
+awk '{ if ( $0 ~ /^>/ ) { if (a > 0) { printf("%s\n%s : ",a,$0); a = 0 } else { printf("%s : ",$0) } }  else  { a = a + length($0) } } END { print a } ' Odioica_reference_v3.0.fa | less
+
+Ouput Sample:
+>scaffold_1 : 3167015
+>scaffold_2 : 2850711
+>scaffold_3 : 2515153
+>scaffold_4 : 2289853
+>scaffold_5 : 1792778
+>scaffold_6 : 1516148
+>scaffold_7 : 1487711
+.....
+
 
 Split fasta:
 
