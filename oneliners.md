@@ -1,0 +1,77 @@
+### Get the first region from a fasta file.
+
+awk '{ if (($1 ~ /^>/) && ( NR > 1 )) { exit } print $0 }' hap1.fa | less -S
+
+Get the first region from a fasta file.
+  ($1 ~ /^>/) If the first field begins with '>'
+  NR > 1      if the current line read from the file is greater than 1
+  exit        This will exit at the start of the second region 
+  print $0    Print the first line, and subsequent lines if they do not begin with '>'
+  hap1.fa     The file we are looking at.
+  | less -S   Pipe results to less, -S option prevents word wrap and allows horizontal scrolling with arrow keys.
+              Alternately redirect output(the first region) to file with "> hap1_region1.fa"
+ 
+ All region and count of nucleotide: (first line blank)
+gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); nCount = 0 } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k5,5 -n | less -S
+
+List nucleotide count for each region:
+gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
+
+
+### Scaffold/Contig/Region sizes in a fasta assembly file.
+
+awk '{ if ( $0 ~ /^>/ ) { if (a > 0) { printf("%s\n%s : ",a,$0); a = 0 } else { printf("%s : ",$0) } }  else  { a = a + length($0) } } END { print a } ' Odioica_reference_v3.0.fa | less
+
+Ouput Sample:
+```
+>scaffold_1 : 3167015
+>scaffold_2 : 2850711
+>scaffold_3 : 2515153
+>scaffold_4 : 2289853
+>scaffold_5 : 1792778
+>scaffold_6 : 1516148
+>scaffold_7 : 1487711
+.....
+```
+
+### Split fasta:
+
+output each with 1.fa, 2.fa 3.fa etc...
+awk '/^>/{s=++d".fa"} {print > s}' multi.fa   ( re: https://awesomeopensource.com/project/crazyhottommy/bioinformatics-one-liners )
+
+Make it more useful: 
+awk '/^>/{s=++d".fa"; fname = substr($1,2,length($1)); n = index(fname,"GL");   if (n == 0) {print fname "-" $2 ".fa";} } ' hs37d5.fa
+awk '/^>/{s=++d".fa"; fname = substr($1,2,length($1)); n = index(fname,"GL");   if ($1 !~ /GL|NC/) {print fname "-" $2 ".fa";} } ' hs37d5.fa
+
+FINAL:
+Split a genome into a file for each of its chromosomes, or filter for chromosomes requried.
+
+First test that the generated filenames will be suitable and unique, and filtered are as you require: (adjust $1 $2 $3 etc and specify filter for 
+ chromosomes not required eg: 'GL' 'NC' [add another with '|MT' ] ) 
+ 
+awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} if (faOut == 1) print fname }' hs37d5.fa
+
+
+Now update this command to output chromosomes requried to the filenames, based on your filename requirements, and this will create the output file 
+for each chromosome:
+
+awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} } {if (faOut == 1) {print > fname} }' hs37d5.fa
+
+hs37d5.fa : the  genome name.
+
+$1 $2 $3 ... are the space delimited column data from the current line.  AWK process line by line and extract fields to $1, $2 etc. Special case $0 is 
+  the whole line (all fields)
+  
+This part : {fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} }  will only be processed if the  
+ current line for the genome begins with ">"
+ 
+fname => create a filename from the chromosome line data in the fasta file, (the substr functions removes the ">" from the start of the first field) 
+  build you filename based on the data in your chromosome /region  identifier, ie $3 could be a better filename, make sure it is unique, otherwise
+   you will write over previous output.
+ 
+the first 'if' will not print any chromosome where the first field contians  a GL or a NC  (substitute for your chromosome/region not required)
+ 
+The final if will print to fname if faOut is set to 1. ( here the '>' is a redirect to file not a greater than)
+
+Maybe alter above based on this?  
+awk ' { if ( $0 ~ /^>/ ) { if (i == 1) { exit }  i = i + 1; } print $0 }' Odioica_reference_v3.0.fa > 0.fa
