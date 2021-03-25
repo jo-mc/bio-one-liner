@@ -1,3 +1,20 @@
+### concert NCBI genome print out to fasta
+ 1. cut and paste into text file
+ ```
+        1 gggggaggag ccaagatggc cgaataggaa cagctccggt ctacagctcc cagcgtgagc
+       61 gacgcagaag acggtgattt ctgcatttcc atctgaggta ccgggttcat ctcactaggg
+      121 agtgccagac agtgggcgca ggccagtgtg tgtgcgcacc gtgcgcgagc cgaagcaggg
+      181 cgaggcattg cctcacctgg gaagcgcaag gggtcaggga gttccctttc tgagtcaaag
+ ```
+ 2. and add header line
+ ```
+ >L19088 Human LINE1 (L1.3) repetitive element DNA sequence. https://www.ncbi.nlm.nih.gov/nuccore/L19088.1
+ ```
+ 3 run oneliner
+```
+awk '{ if (NR > 1) { astr = $2 $3 $4 $5 $6 $7; printf("%s",toupper(astr)); } else { print $0 } }' L1.3 > L1.3.fa
+```
+
 ### Get the first region from a fasta file.
 
 awk '{ if (($1 ~ /^>/) && ( NR > 1 )) { exit } print $0 }' hap1.fa | less -S
