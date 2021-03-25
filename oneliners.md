@@ -34,6 +34,15 @@ gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); n
 List nucleotide count for each region:
 gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
 
+### Get specified region from a fasta file:
+By name (or part name) [will exit after first region match]
+```awk -v reg="1260"  '{ if (($1 ~ /^>/) && ($1 ~ reg)) { fnd = 1; aRow = NR } if ( fnd == 1 ) { if (($1 ~ /^>/) && (NR > aRow)) { exit } print $0 }}' Odioica_reference_v3.0.fa | less -S
+```
+
+#### Get region number from a fasta file:
+```
+awk -v reg="5"  '{ if ($1 ~ /^>/) { regCnt += 1} if (regCnt == reg) { fnd = 1; aRow = NR } if ( fnd == 1 ) { if (($1 ~ /^>/) && (NR > aRow)) { exit } print $0 }}' Odioica_reference_v3.0.fa | less -S
+```
 
 ### Scaffold/Contig/Region sizes in a fasta assembly file.
 
