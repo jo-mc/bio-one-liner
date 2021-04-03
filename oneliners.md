@@ -15,6 +15,9 @@
 awk '{ if (NR > 1) { astr = $2 $3 $4 $5 $6 $7; printf("%s",toupper(astr)); } else { print $0 } }' L1.3 > L1.3.fa
 ```
 
+### fastq to fasta
+ awk '{ if ( NR % 4 == 1 ) print ">" $0; if ( NR % 4 == 2 ) print $0; }' file.fastq > out.fasta
+
 ### Get the first region from a fasta file.
 
 awk '{ if (($1 ~ /^>/) && ( NR > 1 )) { exit } print $0 }' hap1.fa | less -S
