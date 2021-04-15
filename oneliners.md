@@ -1,4 +1,4 @@
-### concert NCBI genome print out to fasta
+### convert NCBI genome print out to fasta
  1. cut and paste into text file
  ```
         1 gggggaggag ccaagatggc cgaataggaa cagctccggt ctacagctcc cagcgtgagc
@@ -36,6 +36,8 @@ gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); n
 
 #### List nucleotide count for each region:
 gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
+
+region and count output: awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa |  less
 
 ### Get specified region from a fasta file:
 By name (or part name) [will exit after first region match]
