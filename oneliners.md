@@ -35,9 +35,11 @@ Get the first region from a fasta file.
 gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); nCount = 0 } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k5,5 -n | less -S
 
 #### List nucleotide count for each region:
-gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
+* gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0 } } else { nCount = nCount + length($0) } } END { print nCount }' | sort -k1,1 -n | less -S
 
-region and count output: awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa |  less
+  * + *region and count output:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa |  less
+
+  * + *Each count and name on lone line and sorted by size:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s : ",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa | sort -n | less
 
 ### Get specified region from a fasta file:
 By name (or part name) [will exit after first region match]
