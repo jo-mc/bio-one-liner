@@ -39,7 +39,7 @@ gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); n
 
   * + *region and count output:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\n",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa |  less
 
-  * + *Each count and name on lone line and sorted by size:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s : ",nCount); nCount = 0; print $1 } } else { nCount = nCount + length($0) } } END { print nCount }' heart.all_size.5merge.collapsed.longest_rep.fa | sort -n | less
+  * + *Each count and name on lone line and sorted by size:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s : %s\n",nCount,lastR); nCount = 0;} lastR = $1 }  else { nCount = nCount + length($0) } } END { printf("%s : %s\n",nCount,lastR) }' heart.all_size.5merge.collapsed.longest_rep.fa |  sort -n | less
 
 ### Get specified region from a fasta file:
 By name (or part name) [will exit after first region match]
