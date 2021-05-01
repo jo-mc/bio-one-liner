@@ -69,27 +69,30 @@ Ouput Sample:
 
 ### Split fasta:
 
-output each with 1.fa, 2.fa 3.fa etc...
-awk '/^>/{s=++d".fa"} {print > s}' multi.fa   ( re: https://awesomeopensource.com/project/crazyhottommy/bioinformatics-one-liners )
+output each with 1.fa, 2.fa 3.fa etc... </br>
+awk '/^>/{s=++d".fa"} {print > s}' multi.fa  </br>
+( re: https://awesomeopensource.com/project/crazyhottommy/bioinformatics-one-liners )
 
-Make it more useful: 
+Make it more useful: </br>
+```
 awk '/^>/{s=++d".fa"; fname = substr($1,2,length($1)); n = index(fname,"GL");   if (n == 0) {print fname "-" $2 ".fa";} } ' hs37d5.fa
 awk '/^>/{s=++d".fa"; fname = substr($1,2,length($1)); n = index(fname,"GL");   if ($1 !~ /GL|NC/) {print fname "-" $2 ".fa";} } ' hs37d5.fa
+```
 
 FINAL:
-Split a genome into a file for each of its chromosomes, or filter for chromosomes requried.
+Split a genome into a file for each of its chromosomes, or filter for chromosomes required.
 
 First test that the generated filenames will be suitable and unique, and filtered are as you require: (adjust $1 $2 $3 etc and specify filter for 
  chromosomes not required eg: 'GL' 'NC' [add another with '|MT' ] ) 
- 
+``` 
 awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} if (faOut == 1) print fname }' hs37d5.fa
-
+```
 
 Now update this command to output chromosomes requried to the filenames, based on your filename requirements, and this will create the output file 
 for each chromosome:
-
+```
 awk '/^>/{fname = substr($1,2,length($1)) "-" $2 ".fa"; if ($1 !~ /GL|NC/) {faOut = 1} else {faOut = 0} } {if (faOut == 1) {print > fname} }' hs37d5.fa
-
+```
 hs37d5.fa : the  genome name.
 
 $1 $2 $3 ... are the space delimited column data from the current line.  AWK process line by line and extract fields to $1, $2 etc. Special case $0 is 
@@ -107,4 +110,6 @@ the first 'if' will not print any chromosome where the first field contians  a G
 The final if will print to fname if faOut is set to 1. ( here the '>' is a redirect to file not a greater than)
 
 Maybe alter above based on this?  
+```
 awk ' { if ( $0 ~ /^>/ ) { if (i == 1) { exit }  i = i + 1; } print $0 }' Odioica_reference_v3.0.fa > 0.fa
+```
