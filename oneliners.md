@@ -41,6 +41,8 @@ gunzip -c hap1.fa.gz | awk '{ if ( $1 ~ /^>/ ) { printf("%s\n%s, ",nCount,$0); n
 
   * + *Each count and name on lone line and sorted by size:* awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s : %s\n",nCount,lastR); nCount = 0;} lastR = $1 }  else { nCount = nCount + length($0) } } END { printf("%s : %s\n",nCount,lastR) }' heart.all_size.5merge.collapsed.longest_rep.fa |  sort -n | less
 
+  * + *'size tab name' => "23    ALU" on each line:*  awk '{ if ( $1 ~ /^>/ ) { if ( NR > 1 ) { printf("%s\t%s\n",nCount,lastR); nCount = 0;} lastR = substr($1,2,length($1)-1) } else { nCount = nCount + length($0) } } END { printf("%s\t%s\n",nCount,lastR) }'  ../biolib/humsubrep.ref | less
+
 ### Get specified region from a fasta file:
 By name (or part name) [will exit after first region match]
 ```awk -v reg="1260"  '{ if (($1 ~ /^>/) && ($1 ~ reg)) { fnd = 1; aRow = NR } if ( fnd == 1 ) { if (($1 ~ /^>/) && (NR > aRow)) { exit } print $0 }}' Odioica_reference_v3.0.fa | less -S
