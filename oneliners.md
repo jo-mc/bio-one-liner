@@ -113,3 +113,8 @@ Maybe alter above based on this?
 ```
 awk ' { if ( $0 ~ /^>/ ) { if (i == 1) { exit }  i = i + 1; } print $0 }' Odioica_reference_v3.0.fa > 0.fa
 ```
+
+### fastq.gz to fasta:
+This is the fastest bash one-liner to convert fastq to fasta, assuming 4 lines per FASTQ record, more on https://github.com/stephenturner/oneliners
+
+sed -n '1~4s/^@/>/p;2~4p' test.fastq > test.fasta
