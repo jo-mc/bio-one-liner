@@ -120,3 +120,8 @@ awk ' { if ( $0 ~ /^>/ ) { if (i == 1) { exit }  i = i + 1; } print $0 }' Odioic
 This is the fastest bash one-liner to convert fastq to fasta, assuming 4 lines per FASTQ record, more on https://github.com/stephenturner/oneliners
 
 sed -n '1~4s/^@/>/p;2~4p' test.fastq > test.fasta
+
+
+### count N's fasta in 80 cols or ??  under construction...
+awk -FN ' BEGIN { i = 0; j = 0; bg = 0; ed = 0; } {  if ( $1 ~ /^>/  ) {if ( i > 1 )  { ed = j - 80; print bg,ed, (ed - bg), "line ", NR } j = j - 80; i = 0; print $0 } j = j + 80; if ( ( NF-1 ) == 80 ) { i = i + 80 } else { if ( i > 1 )  { ed = j - 80; i = 0; print bg,ed, (ed - bg), " line ", NR } else { i = 0 } } if ( i == 80 ) { bg = j - 80; print NR } } END { }' GCA_000001405.28_GRCh38.p13_genomic.fna > testN.txt
+
