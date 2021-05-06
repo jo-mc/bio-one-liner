@@ -125,3 +125,6 @@ sed -n '1~4s/^@/>/p;2~4p' test.fastq > test.fasta
 ### count N's fasta in 80 cols or ??  under construction...
 awk -FN ' BEGIN { i = 0; j = 0; bg = 0; ed = 0; } {  if ( $1 ~ /^>/  ) {if ( i > 1 )  { ed = j - 80; print bg,ed, (ed - bg), "line ", NR } j = j - 80; i = 0; print $0 } j = j + 80; if ( ( NF-1 ) == 80 ) { i = i + 80 } else { if ( i > 1 )  { ed = j - 80; i = 0; print bg,ed, (ed - bg), " line ", NR } else { i = 0 } } if ( i == 80 ) { bg = j - 80; print NR } } END { }' GCA_000001405.28_GRCh38.p13_genomic.fna > testN.txt
 
+Better : https://superuser.com/questions/485800/whats-the-quickest-way-to-count-the-number-of-each-character-in-a-file/485811  
+echo 'int cache[256],x,y;char buf[4096],letters[]="tagcnTAGCN-"; int main(){while((x=read(0,buf,sizeof buf))>0)for(y=0;y<x;y++)cache[(unsigned char)buf[y]]++;for(x=0;x<sizeof letters-1;x++)printf("%c: %d\n",letters[x],cache[letters[x]]);}' | gcc -w -xc -; ./a.out < chr6GRCh38p13.fna; rm a.out;
+
