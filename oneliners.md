@@ -129,3 +129,9 @@ awk -FN ' BEGIN { i = 0; j = 0; bg = 0; ed = 0; } {  if ( $1 ~ /^>/  ) {if ( i >
 Better : https://superuser.com/questions/485800/whats-the-quickest-way-to-count-the-number-of-each-character-in-a-file/485811  
 echo 'int cache[256],x,y;char buf[4096],letters[]="tagcnTAGCN-"; int main(){while((x=read(0,buf,sizeof buf))>0)for(y=0;y<x;y++)cache[(unsigned char)buf[y]]++;for(x=0;x<sizeof letters-1;x++)printf("%c: %d\n",letters[x],cache[letters[x]]);}' | gcc -w -xc -; ./a.out < chr6GRCh38p13.fna; rm a.out;
 
+#### Split a Fasta (ref/contig/scaffold) file into reads
+echo 'int x,y,d;char buf[4096];int main() {while ((x=read(0,buf,sizeof buf))>0) { if (d > 0) {printf("R%d\n",d); for(y=0;y<x;y++) printf("%c",buf[y]); printf("\n");} d++;} }' | gcc -w -xc -; ./a.out < hap1-9.fa | less -S
+
+read size = 4096
+first read will read line 1 of file = scaffold name we skip this. 
+Reads area labelled R1 ... Rn     n will be how ever many reads are split up.
