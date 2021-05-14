@@ -135,3 +135,6 @@ echo 'int x,y,d;char buf[4096];int main() {while ((x=read(0,buf,sizeof buf))>0) 
 read size = 4096
 first read will read line 1 of file = scaffold name we skip this. 
 Reads area labelled R1 ... Rn     n will be how ever many reads are split up.
+
+### View a fasta file which has fixed line width, to one line of sequence per read/id
+awk '{ if ( substr($0,1,1) == ">" ) printf("\n%s\n",$0); else printf("%s",$0) }' /home/a1779913/humrep/repbase_hum/humsub-labelDup.ref | less -S
