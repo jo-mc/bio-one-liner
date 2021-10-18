@@ -139,6 +139,6 @@ Reads area labelled R1 ... Rn     n will be how ever many reads are split up.
 ### View a fasta file which has fixed line width, to one line of sequence per read/id
 awk '{ if ( substr($0,1,1) == ">" ) printf("\n%s\n",$0); else printf("%s",$0) }' /home/a1779913/humrep/repbase_hum/humsub-labelDup.ref | less -S
 
-### work with samtools adn gzipped file
+### work with samtools and gzipped file
 index fastq:
  gzip -d -c your.fastq.gz | samtools faidx - -o your.index    The '-' will make samtools read from stdin.
