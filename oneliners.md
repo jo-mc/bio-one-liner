@@ -149,3 +149,7 @@ index fastq:
 Get every fourth read: ( IE divide by 4)
 
 gunzip -c /reads/illumina.fastq.gz | awk '{ if ((NR % 16) == 1) {ot = 1}; if (ot ==1) { print $0; a = a + 1 }; if( a == 4) { a = 0; ot = 0}; }' | gzip > IlluminaDiv4.fastq.gz
+
+### get large inserts from VCF file:
+less -S HG002.m84005_220919_232112_s2.GRCh38.pbsv.vcf.gz | awk 'BEGIN {rx="SVLEN.[0-9][0-9][0-9][0-9]"} {if ($0 ~ rx) print }' | less -S
+ note the regex rx does not need to be inside // in the comparison $0 ~ rx  [not $1 ~ /rx/ ] 
