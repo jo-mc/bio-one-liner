@@ -150,6 +150,51 @@ Get every fourth read: ( IE divide by 4)
 
 gunzip -c /reads/illumina.fastq.gz | awk '{ if ((NR % 16) == 1) {ot = 1}; if (ot ==1) { print $0; a = a + 1 }; if( a == 4) { a = 0; ot = 0}; }' | gzip > IlluminaDiv4.fastq.gz
 
+IF PAIRED reads and pairs are consecutive:   (some tools need /1 /2 or .1 .2 removed! )
+
+gunzip -c /reads/illumina.fastq.gz | awk '{ if ((NR % 32) == 1) {ot = 1}; if (ot ==1) { print $0; a = a + 1 }; if( a == 8) { a = 0; ot = 0}; }' | gzip > IlluminaDiv4.fastq.gz
+
+### SUB SAMPLE From BAM
+IF YOU NEED TO KEEP READ PAIRS use SAMTOOLS "-s":
+
+samtools view -bs 42.0005 $illumina
+```ruby
+samtools has a subsampling option: 
+
+-s FLOAT: 
+ Integer part is used to seed the random number generator [0]. 
+ Part after the decimal point sets the fraction of templates/pairs to subsample [no subsampling] 
+
+samtools view -bs 42.1 in.bam > subsampled.bam 
+ 
+will subsample 10 percent mapped reads with 42 as the seed for the random number generator. 
+```
+
 ### get large inserts from VCF file:
 less -S HG002.m84005_220919_232112_s2.GRCh38.pbsv.vcf.gz | awk 'BEGIN {rx="SVLEN.[0-9][0-9][0-9][0-9]"} {if ($0 ~ rx) print }' | less -S
  note the regex rx does not need to be inside // in the comparison $0 ~ rx  [not $1 ~ /rx/ ] 
+
+
+### Find unique ? under development ( ie from two files output from above "inserts from VCF file" )
+awk '{ ind = $1 ":" $2; if (FNR == NR) { k[ind]=1; } else { if (ind in k) {k[ind]=k[ind]+1;} else {k[ind]=1;}  }'
+if k[ind] = 1 then it is unique.  But need a window typqe function too?
+
+ie two vcf's find  non duplicates (or duplicates k[i] ==2)
+```ruby
+awk '{ ind = $1 ":" $2; if (ind in k) {k[ind]=k[ind]+1;} else {k[ind]=1;} } END { for ( i in k) {if (k[i] == 1) print i}  }'  HG02_S2.vcf HG02_S1.vcf | less -S
+```
+=> neeed FNR == NR to identify file containing unique.
+Add file id: 
+```ruby
+ awk '{ ind = $1 ":" $2; if (FNR == NR) {file = "A"} else {file = "B"} kf[ind]=file; if (ind in k) {k[ind]=k[ind]+1;} else {k[ind]=1;} } END { for ( i in k) {if (k[i] == 1) print i, kf[i]}  }'  HG02_S2.vcf HG02_S1.vcf |  sort -V | less -S
+```
+
+```ruby 
+chr1:191341 A
+chr1:977117 A
+chr1:977247 B
+chr1:1289035 A
+chr1:1929384 A
+chr1:2663027 A
+chr1:2675143 B
+```
