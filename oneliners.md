@@ -198,3 +198,7 @@ chr1:1929384 A
 chr1:2663027 A
 chr1:2675143 B
 ```
+```ruby
+count no of bases
+gunzip -c SRR6334890_consensus.fastq.gz | awk '{ if ((NR % 4) == 2) printf("%s",$0) }' | wc
+```
