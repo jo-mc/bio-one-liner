@@ -1,0 +1,3 @@
+
+Trying to find derive exon/bed reigons & expression from panel sequence data: ?
+samtools depth c_200203MID089_HMT.bam  | awk  'BEGIN { avg = 1 }  {  sum = 49*avg + $3; avg = sum/50; if ( $3 > (3 * avg)) {upp = 1; dwn = 0;} if ( $3 < (3 * avg)) {upp = 0; dwn = 1;} if ((lstupp != upp) && (lstdwn != dwn) && ((lstavg-avg) < -10))  { print "==========>>>",$0, avg, "upp:" upp, "dwn:",dwn, "avg:"avg, "lstavg:" lstavg, "lstavg-avg:" (lstavg-avg) ;  };  lstupp = upp; lstdwn = dwn; lstavg = avg }' | less -S
